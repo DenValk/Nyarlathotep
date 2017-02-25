@@ -1,0 +1,67 @@
+#include "services_dune.fcl"
+
+process_name: Nyarlathotep
+
+services:
+{
+  
+  TFileService:           { fileName: "Nyarlathotep.root" }
+
+  TimeTracker:            {}
+  
+  DetectorClocksService:  @local::dunefd_detectorclocks
+
+  Geometry:               @local::dunefd_geo
+
+  ExptGeoHelperInterface: @local::dune_geometry_helper
+
+  DatabaseUtil:           @local::dunefd_database
+
+  PhotonBackTracker:      @local::dunefd_photonbacktracker
+  
+  BackTracker:            @local::dunefd_backtracker
+
+} # services
+
+
+source:
+{
+  module_type: RootInput
+  maxEvents:  -1 
+}
+
+# This is empty, because we're not writing any art::Events to an output file. 
+outputs:{}
+
+physics:
+{
+  analyzers:
+  {
+    Nyarlathotep: 
+    {
+
+      module_type:    "Nyarlathotep"
+
+      PhotLabel:      "ophit"
+
+      HitLabel:       "hitfd"
+      
+      PhotonBackTrackerLabel:      "largeant"
+      
+      BackTrackerLabel:      "largeant"
+
+      eLifetime:      3.0e-3    #seconds
+
+      eDriftVelocity: 1.6e5      #cm/Second  (.16cm/us -> cm/second)
+
+    }
+  }
+
+
+  analysis: [ Nyarlathotep ]
+
+  end_paths: [ analysis ]
+}
+
+
+services.PhotonBackTracker.Delay:     260
