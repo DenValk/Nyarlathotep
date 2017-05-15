@@ -291,7 +291,14 @@ namespace Nyarlathotep {
       zTpcMin = std::min(zTpcMin, TPC.MinZ());
       zTpcMax = std::max(zTpcMax, TPC.MaxZ());
     }
-    int nBinsX = int((xCryoMax - xCryoMin)/10);
+    int nBinsX = 1;
+    //int nBinsX = int((xCryoMax - xCryoMin)/10);
+    {
+      int n1cmBins = int((xCryoMax - xCryoMin)/10);
+      if(n1cmBins<100) nBinsX=100;
+      else nBinsX=n1cmBins;
+
+    }
     int nBinsZ = int((zCryoMax - zCryoMin)/10);
     
     //TDirectories
