@@ -12,6 +12,7 @@
 
 // LArSoft includes
 #include "lardataobj/RecoBase/OpHit.h"
+#include "lardataobj/RecoBase/OpFlash.h"
 #include "larcore/Geometry/Geometry.h"
 #include "larcore/Geometry/GeometryCore.h"
 #include "larcore/CoreUtils/ServiceUtil.h"
@@ -111,6 +112,10 @@ namespace Nyarlathotep {
 
   private:
 
+    int nPEsBins = 51;
+    double nPEsMin = -0.5;
+    double nPEsMax = 50.5;
+
 /*    double modulo (double a, double b);
     double modulo (double a, int b);
     int modulo (int a, int b);
@@ -118,6 +123,7 @@ namespace Nyarlathotep {
     int signF (double a);*/
 
     std::string fOpHitLabel;
+    std::string fOpFlashLabel;
     std::string fHitLabel;
     std::string fBTRLabel;
     std::string fPBTRLabel;
@@ -135,123 +141,129 @@ namespace Nyarlathotep {
 
     TH2D* fPeakAmpVXZ;
     TH2D* fIntegralVXZ;
-    TH2D* fPEVXZ;
+    TH2D* fHitPEVXZ;
 
     TH2D* fAlpha_PeakAmpVXZ;
     TH2D* fAlpha_IntegralVXZ;
-    TH2D* fAlpha_PEVXZ;
+    TH2D* fAlpha_HitPEVXZ;
 
     TH2D* fBeta_PeakAmpVXZ;
     TH2D* fBeta_IntegralVXZ;
-    TH2D* fBeta_PEVXZ;
+    TH2D* fBeta_HitPEVXZ;
 
     TH2D* fGamma_PeakAmpVXZ;
     TH2D* fGamma_IntegralVXZ;
-    TH2D* fGamma_PEVXZ;
+    TH2D* fGamma_HitPEVXZ;
 
     TH2D* fNeutron_PeakAmpVXZ;
     TH2D* fNeutron_IntegralVXZ;
-    TH2D* fNeutron_PEVXZ;
+    TH2D* fNeutron_HitPEVXZ;
 
     //Unscalled Histograms
     TH1D* fPeakAmpVXhist;
     TH1D* fIntegralVXhist;
-    TH1D* fPEVXhist;
+    TH1D* fHitPEVXhist;
+    TH1D* fFlashPEsHist;
     TH1D* muon_PeakAmpVXhist;
     TH1D* muon_IntegralVXhist;
-    TH1D* muon_PEVXhist;
+    TH1D* muon_HitPEVXhist;
+//    TH1D* muon_FlashPEsHist;
     TProfile* fPeakAmpVX;
     TProfile* fIntegralVX;
-    TProfile* fPEVX;
+    TProfile* fHitPEVX;
     TProfile* localTop_PeakAmpVX;
     TProfile* localTop_IntegralVX;
-    TProfile* localTop_PEVX;
+    TProfile* localTop_HitPEVX;
     TProfile* localSides_PeakAmpVX;
     TProfile* localSides_IntegralVX;
-    TProfile* localSides_PEVX;
+    TProfile* localSides_HitPEVX;
     TProfile* localAPA_PeakAmpVX;
     TProfile* localAPA_IntegralVX;
-    TProfile* localAPA_PEVX;
+    TProfile* localAPA_HitPEVX;
     TProfile* localCPA_PeakAmpVX;
     TProfile* localCPA_IntegralVX;
-    TProfile* localCPA_PEVX;
+    TProfile* localCPA_HitPEVX;
     TProfile* muon_PeakAmpVX;
     TProfile* muon_IntegralVX;
-    TProfile* muon_PEVX;
+    TProfile* muon_HitPEVX;
     TProfile* alpha_PeakAmpVX;
     TH1D* alpha_PeakAmpVXhist;
     TProfile* alpha_IntegralVX;
     TH1D* alpha_IntegralVXhist;
-    TProfile* alpha_PEVX;
-    TH1D* alpha_PEVXhist;
+    TProfile* alpha_HitPEVX;
+    TH1D* alpha_HitPEVXhist;
+//    TH1D* alpha_FlashPEsHist;
     TProfile* beta_PeakAmpVX;
     TH1D* beta_PeakAmpVXhist;
     TProfile* beta_IntegralVX;
     TH1D* beta_IntegralVXhist;
-    TProfile* beta_PEVX;
-    TH1D* beta_PEVXhist;
+    TProfile* beta_HitPEVX;
+    TH1D* beta_HitPEVXhist;
+//    TH1D* beta_FlashPEsHist;
     TProfile* gamma_PeakAmpVX;
     TH1D* gamma_PeakAmpVXhist;
     TProfile* gamma_IntegralVX;
     TH1D* gamma_IntegralVXhist;
-    TProfile* gamma_PEVX;
-    TH1D* gamma_PEVXhist;
+    TProfile* gamma_HitPEVX;
+    TH1D* gamma_HitPEVXhist;
+//    TH1D* gamma_FlashPEsHist;
     TProfile* neutron_PeakAmpVX;
     TH1D* neutron_PeakAmpVXhist;
     TProfile* neutron_IntegralVX;
     TH1D* neutron_IntegralVXhist;
-    TProfile* neutron_PEVX;
-    TH1D* neutron_PEVXhist;
+    TProfile* neutron_HitPEVX;
+    TH1D* neutron_HitPEVXhist;
+//    TH1D* neutron_FlashPEsHist;
 
     //Scaled histograms
     TProfile* fPeakAmpScaledVX;
     TH1D* fPeakAmpScaledVXhist;
     TProfile* fIntegralScaledVX;
     TH1D* fIntegralScaledVXhist;
-    TProfile* fPEScaledVX;
-    TH1D* fPEScaledVXhist;
+    TProfile* fHitPEScaledVX;
+    TH1D* fHitPEScaledVXhist;
     TProfile* localTop_PeakAmpScaledVX;
     TProfile* localTop_IntegralScaledVX;
-    TProfile* localTop_PEScaledVX;
+    TProfile* localTop_HitPEScaledVX;
     TProfile* localSides_PeakAmpScaledVX;
     TProfile* localSides_IntegralScaledVX;
-    TProfile* localSides_PEScaledVX;
+    TProfile* localSides_HitPEScaledVX;
     TProfile* localAPA_PeakAmpScaledVX;
     TProfile* localAPA_IntegralScaledVX;
-    TProfile* localAPA_PEScaledVX;
+    TProfile* localAPA_HitPEScaledVX;
     TProfile* localCPA_PeakAmpScaledVX;
     TProfile* localCPA_IntegralScaledVX;
-    TProfile* localCPA_PEScaledVX;
+    TProfile* localCPA_HitPEScaledVX;
     TProfile* muon_PeakAmpScaledVX;
     TH1D* muon_PeakAmpScaledVXhist;
     TProfile* muon_IntegralScaledVX;
     TH1D* muon_IntegralScaledVXhist;
-    TProfile* muon_PEScaledVX;
-    TH1D* muon_PEScaledVXhist;
+    TProfile* muon_HitPEScaledVX;
+    TH1D* muon_HitPEScaledVXhist;
     TProfile* alpha_PeakAmpScaledVX;
     TH1D* alpha_PeakAmpScaledVXhist;
     TProfile* alpha_IntegralScaledVX;
     TH1D* alpha_IntegralScaledVXhist;
-    TProfile* alpha_PEScaledVX;
-    TH1D* alpha_PEScaledVXhist;
+    TProfile* alpha_HitPEScaledVX;
+    TH1D* alpha_HitPEScaledVXhist;
     TProfile* beta_PeakAmpScaledVX;
     TH1D* beta_PeakAmpScaledVXhist;
     TProfile* beta_IntegralScaledVX;
     TH1D* beta_IntegralScaledVXhist;
-    TProfile* beta_PEScaledVX;
-    TH1D* beta_PEScaledVXhist;
+    TProfile* beta_HitPEScaledVX;
+    TH1D* beta_HitPEScaledVXhist;
     TProfile* gamma_PeakAmpScaledVX;
     TH1D* gamma_PeakAmpScaledVXhist;
     TProfile* gamma_IntegralScaledVX;
     TH1D* gamma_IntegralScaledVXhist;
-    TProfile* gamma_PEScaledVX;
-    TH1D* gamma_PEScaledVXhist;
+    TProfile* gamma_HitPEScaledVX;
+    TH1D* gamma_HitPEScaledVXhist;
     TProfile* neutron_PeakAmpScaledVX;
     TH1D* neutron_PeakAmpScaledVXhist;
     TProfile* neutron_IntegralScaledVX;
     TH1D* neutron_IntegralScaledVXhist;
-    TProfile* neutron_PEScaledVX;
-    TH1D* neutron_PEScaledVXhist;
+    TProfile* neutron_HitPEScaledVX;
+    TH1D* neutron_HitPEScaledVXhist;
 
   
 
@@ -346,11 +358,11 @@ namespace Nyarlathotep {
     fIntegralVXZ->SetYTitle("Z Position (cm)");
     fIntegralVXZ->SetZTitle("X Position (cm)");
 
-    fPEVXZ       =            allParticleDir.make<TH2D>("fPEVXZ",
+    fHitPEVXZ       =            allParticleDir.make<TH2D>("fHitPEVXZ",
         "Histogram of PhotoElectrons Detected vs Z Position (cm) and X Position (cm)",
         nBinsX*20, xCryoMin, xCryoMax,        nBinsZ, zCryoMin, zCryoMax        );
-    fPEVXZ->SetYTitle("Z Position (cm)");
-    fPEVXZ->SetXTitle("X Position (cm)");
+    fHitPEVXZ->SetYTitle("Z Position (cm)");
+    fHitPEVXZ->SetXTitle("X Position (cm)");
 
     fAlpha_PeakAmpVXZ  =            alphaDir.make<TH2D>("fAlpha_PeakAmpVXZ",
         "Histogram of HitPeakAmplitude vs Z Position (cm) and X Position (cm) from #alpha's",
@@ -364,11 +376,11 @@ namespace Nyarlathotep {
     fAlpha_IntegralVXZ->SetYTitle("Z Position (cm)");
     fAlpha_IntegralVXZ->SetXTitle("X Position (cm)");
 
-    fAlpha_PEVXZ       =            alphaDir.make<TH2D>("fAlpha_PEVXZ",
+    fAlpha_HitPEVXZ       =            alphaDir.make<TH2D>("fAlpha_HitPEVXZ",
         "Histogram of PhotoElectrons Detected vs Z Position (cm) and X Position (cm) from #alpha's",
         nBinsX, xCryoMin, xCryoMax,        nBinsZ, zCryoMin, zCryoMax        );
-    fAlpha_PEVXZ->SetYTitle("Z Position (cm)");
-    fAlpha_PEVXZ->SetXTitle("X Position (cm)");
+    fAlpha_HitPEVXZ->SetYTitle("Z Position (cm)");
+    fAlpha_HitPEVXZ->SetXTitle("X Position (cm)");
 
     fBeta_PeakAmpVXZ  =            betaDir.make<TH2D>("fBeta_PeakAmpVXZ",
         "Histogram of HitPeakAmplitude vs Z Position (cm) and X Position (cm) from #beta's", 
@@ -382,11 +394,11 @@ namespace Nyarlathotep {
     fBeta_IntegralVXZ->SetYTitle("Z Position (cm)");
     fBeta_IntegralVXZ->SetXTitle("X Position (cm)");
 
-    fBeta_PEVXZ       =            betaDir.make<TH2D>("fBeta_PEVXZ",
+    fBeta_HitPEVXZ       =            betaDir.make<TH2D>("fBeta_HitPEVXZ",
         "Histogram of PhotoElectrons Detected vs Z Position (cm) and X Position (cm) from #beta's",
         nBinsX, xCryoMin, xCryoMax,        nBinsZ, zCryoMin, zCryoMax        );
-    fBeta_PEVXZ->SetYTitle("Z Position (cm)");
-    fBeta_PEVXZ->SetXTitle("X Position (cm)");
+    fBeta_HitPEVXZ->SetYTitle("Z Position (cm)");
+    fBeta_HitPEVXZ->SetXTitle("X Position (cm)");
 
     fGamma_PeakAmpVXZ  =            gammaDir.make<TH2D>("fGamma_PeakAmpVXZ",
         "Histogram of HitPeakAmplitude vs Z Position (cm) and X Position (cm) from #gamma's",
@@ -400,11 +412,11 @@ namespace Nyarlathotep {
     fGamma_IntegralVXZ->SetYTitle("Z Position (cm)");
     fGamma_IntegralVXZ->SetXTitle("X Position (cm)");
 
-    fGamma_PEVXZ       =            gammaDir.make<TH2D>("fGamma_PEVXZ",
+    fGamma_HitPEVXZ       =            gammaDir.make<TH2D>("fGamma_HitPEVXZ",
         "Histogram of PhotoElectrons Detected vs Z Position (cm) and X Position (cm) from #gamma's",
         nBinsX, xCryoMin, xCryoMax,        nBinsZ, zCryoMin, zCryoMax        );
-    fGamma_PEVXZ->SetYTitle("Z Position (cm)");
-    fGamma_PEVXZ->SetXTitle("X Position (cm)");
+    fGamma_HitPEVXZ->SetYTitle("Z Position (cm)");
+    fGamma_HitPEVXZ->SetXTitle("X Position (cm)");
 
     fNeutron_PeakAmpVXZ  =            neutronDir.make<TH2D>("fNeutron_PeakAmpVXZ",
         "Histogram of HitPeakAmplitude vs Z Position (cm) and X Position (cm) from neutrons",
@@ -418,11 +430,11 @@ namespace Nyarlathotep {
     fNeutron_IntegralVXZ->SetYTitle("Z Position (cm)");
     fNeutron_IntegralVXZ->SetXTitle("X Position (cm)");
 
-    fNeutron_PEVXZ       =            neutronDir.make<TH2D>("fNeutron_PEVXZ",
+    fNeutron_HitPEVXZ       =            neutronDir.make<TH2D>("fNeutron_HitPEVXZ",
         "Histogram of PhotoElectrons Detected vs Z Position (cm) and X Position (cm) from neutrons",
         nBinsX, xCryoMin, xCryoMax,        nBinsZ, zCryoMin, zCryoMax        );
-    fNeutron_PEVXZ->SetYTitle("Z Position (cm)");
-    fNeutron_PEVXZ->SetXTitle("X Position (cm)");
+    fNeutron_HitPEVXZ->SetYTitle("Z Position (cm)");
+    fNeutron_HitPEVXZ->SetXTitle("X Position (cm)");
 
     //make scaled histograms
     fPeakAmpScaledVX =              scaledAllParticlesDir.make<TProfile>("fPeakAmpScaledVX", 
@@ -433,27 +445,27 @@ namespace Nyarlathotep {
         "Plot of the Hit Integral Values vs X position (Distance from APA in cm)", nBinsX, xCryoMin, xCryoMax);
     fIntegralScaledVXhist =         scaledAllParticlesDir.make<TH1D>("fIntegralScaledVXhist", 
         "Plot of Summed Hit Integral Values vs X position (Distance from APA in cm)", nBinsX, xCryoMin, xCryoMax);
-    fPEScaledVX =                   scaledAllParticlesDir.make<TProfile>("fPEScaledVX", 
+    fHitPEScaledVX =                   scaledAllParticlesDir.make<TProfile>("fHitPEScaledVX", 
         "Plot of the number of Detected Photo Electrons per OpHit vs X position (Distance from APA in cm)", nBinsX, xCryoMin, xCryoMax);
-    fPEScaledVXhist =               scaledAllParticlesDir.make<TH1D>("fPEScaledVXhist", 
-        "Plot of the number of Detected Photo Electrons per OpHit vs X position (Distance from APA in cm)", nBinsX, xCryoMin, xCryoMax);
+    fHitPEScaledVXhist =               scaledAllParticlesDir.make<TH1D>("fHitPEScaledVXhist", 
+        "Plot of the number of Detected Photo Electrons vs X position (Distance from APA in cm)", nBinsX, xCryoMin, xCryoMax);
     localTop_PeakAmpScaledVX =      scaledAllParticlesDir.make<TProfile>("fromTop_PeakAmpScaledVX", 
         "Peak Amplitude per hit vs X (distance from APA in cm) for particles from the top of the TPC", nBinsX, xCryoMin, xCryoMax);
     localTop_IntegralScaledVX =     scaledAllParticlesDir.make<TProfile>("fromTop_IntegralScaledVX", 
         "Integral per hit vs X (distance from APA in cm) for particles from the top of the TPC", nBinsX, xCryoMin, xCryoMax);
-    localTop_PEScaledVX =           scaledAllParticlesDir.make<TProfile>("fromTop_PEsVsXpos", 
+    localTop_HitPEScaledVX =           scaledAllParticlesDir.make<TProfile>("fromTop_PEsVsXpos", 
         "Photo Electrons per ophit vs X (distance from APA) for particles from the top of the TPC", nBinsX, xCryoMin, xCryoMax);
     localSides_PeakAmpScaledVX =    scaledAllParticlesDir.make<TProfile>("fromSides_PeakAmpScaledVX",
         "Plot of the Hit Peak Amplitudes vs X ositions (distance from APA in cm) for particles from the sides of the TPC", nBinsX, xCryoMin, xCryoMax);
     localSides_IntegralScaledVX =   scaledAllParticlesDir.make<TProfile>("fromSides_IntegralScaledVX",
         "Integral values per hit vs X position (distance from APA in cm) for particles from the TPC sides" , nBinsX, xCryoMin, xCryoMax);
-    localSides_PEScaledVX =         scaledAllParticlesDir.make<TProfile>("fromSides_PEScaledVX", 
+    localSides_HitPEScaledVX =         scaledAllParticlesDir.make<TProfile>("fromSides_HitPEScaledVX", 
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for particles from the TPC sides" , nBinsX, xCryoMin, xCryoMax);
     localAPA_PeakAmpScaledVX =      scaledAllParticlesDir.make<TProfile>("fromAPA_PeakAmpScaledVX", 
         "Peak Amp per hit vs X position (distance from APA in cm) for particles from the APA", nBinsX, xCryoMin, xCryoMax);
     localAPA_IntegralScaledVX =     scaledAllParticlesDir.make<TProfile>("fromAPA_IntegralScaledVX",
         "Integral per hit Vs X position (distance from APA in cm) for particles from the APA", nBinsX, xCryoMin, xCryoMax);
-    localAPA_PEScaledVX =           scaledAllParticlesDir.make<TProfile>("fromAPA_PEScaledVX",
+    localAPA_HitPEScaledVX =           scaledAllParticlesDir.make<TProfile>("fromAPA_HitPEScaledVX",
         "PhotoElectrons per OpHit Vs X position (distance from APA in cm) for particles from the APA", nBinsX, xCryoMin, xCryoMax);
     muon_PeakAmpScaledVX =          scaledMuonDir.make<TProfile>("muon_PeakAmpScaledVX",
         "Peak Amp per Hit vs X position (distance from APA in cm) for Muons", nBinsX, xCryoMin, xCryoMax);
@@ -463,9 +475,9 @@ namespace Nyarlathotep {
         "Integral per Hit vs X position (distance from APA in cm) for Muons", nBinsX, xCryoMin, xCryoMax);
     muon_IntegralScaledVXhist =     scaledMuonDir.make<TH1D>("muon_IntegralScaledVXhist",
         "Integral per Hit vs X position (distance from APA in cm) for Muons", nBinsX, xCryoMin, xCryoMax);
-    muon_PEScaledVX =               scaledMuonDir.make<TProfile>("muon_PEScaledVX",
+    muon_HitPEScaledVX =               scaledMuonDir.make<TProfile>("muon_HitPEScaledVX",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for Muons", nBinsX, xCryoMin, xCryoMax);
-    muon_PEScaledVXhist =           scaledMuonDir.make<TH1D>("muon_PEScaledVXhist",
+    muon_HitPEScaledVXhist =           scaledMuonDir.make<TH1D>("muon_HitPEScaledVXhist",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for Muons", nBinsX, xCryoMin, xCryoMax);
     alpha_PeakAmpScaledVX =         scaledAlphaDir.make<TProfile>("alpha_PeakAmpScaledVX",
         "Peak Amp per Hit vs X position (distance from APA in cm) for Alphas", nBinsX, xCryoMin, xCryoMax);
@@ -475,9 +487,9 @@ namespace Nyarlathotep {
         "Integral per Hit vs X position (distance from APA in cm) for Alphas", nBinsX, xCryoMin, xCryoMax);
     alpha_IntegralScaledVXhist =    scaledAlphaDir.make<TH1D>("alpha_IntegralScaledVXhist",
         "Integral per Hit vs X position (distance from APA in cm) for Alphas", nBinsX, xCryoMin, xCryoMax);
-    alpha_PEScaledVX =              scaledAlphaDir.make<TProfile>("alpha_PEScaledVX",
+    alpha_HitPEScaledVX =              scaledAlphaDir.make<TProfile>("alpha_HitPEScaledVX",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for Alphas", nBinsX, xCryoMin, xCryoMax);
-    alpha_PEScaledVXhist =          scaledAlphaDir.make<TH1D>("alpha_PEScaledVXhist",
+    alpha_HitPEScaledVXhist =          scaledAlphaDir.make<TH1D>("alpha_HitPEScaledVXhist",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for Alphas", nBinsX, xCryoMin, xCryoMax);
     beta_PeakAmpScaledVX =          scaledBetaDir.make<TProfile>("beta_PeakAmpScaledVX",
         "Peak Amp per Hit vs X position (distance from APA in cm) for Betas", nBinsX, xCryoMin, xCryoMax);
@@ -487,9 +499,9 @@ namespace Nyarlathotep {
         "Integral per Hit vs X position (distance from APA in cm) for Betas", nBinsX, xCryoMin, xCryoMax);
     beta_IntegralScaledVXhist =     scaledBetaDir.make<TH1D>("beta_IntegralScaledVXhist",
         "Integral per Hit vs X position (distance from APA in cm) for Betas", nBinsX, xCryoMin, xCryoMax);
-    beta_PEScaledVX =               scaledBetaDir.make<TProfile>("beta_PEScaledVX",
+    beta_HitPEScaledVX =               scaledBetaDir.make<TProfile>("beta_HitPEScaledVX",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for Betas", nBinsX, xCryoMin, xCryoMax);
-    beta_PEScaledVXhist =           scaledBetaDir.make<TH1D>("beta_PEScaledVXhist",
+    beta_HitPEScaledVXhist =           scaledBetaDir.make<TH1D>("beta_HitPEScaledVXhist",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for Betas", nBinsX, xCryoMin, xCryoMax);
     gamma_PeakAmpScaledVX =         scaledGammaDir.make<TProfile>("gamma_PeakAmpScaledVX",
         "Peak Amp per Hit vs X position (distance from APA in cm) for gammas", nBinsX, xCryoMin, xCryoMax);
@@ -499,21 +511,21 @@ namespace Nyarlathotep {
         "Peak Amp per Hit vs X position (distance from APA in cm) for gammas", nBinsX, xCryoMin, xCryoMax);
     gamma_IntegralScaledVXhist =    scaledGammaDir.make<TH1D>("gamma_IntegralScaledVXhist",
         "Integral per Hit vs X position (distance from APA in cm) for gammas", nBinsX, xCryoMin, xCryoMax);
-    gamma_PEScaledVX =              scaledGammaDir.make<TProfile>("gamma_PEScaledVX",
+    gamma_HitPEScaledVX =              scaledGammaDir.make<TProfile>("gamma_HitPEScaledVX",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for gammas", nBinsX, xCryoMin, xCryoMax);
-    gamma_PEScaledVXhist =          scaledGammaDir.make<TH1D>("gamma_PEScaledVXhist",
+    gamma_HitPEScaledVXhist =          scaledGammaDir.make<TH1D>("gamma_HitPEScaledVXhist",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for gammas", nBinsX, xCryoMin, xCryoMax);
-    neutron_PeakAmpScaledVX =         scaledNeutronDir.make<TProfile>("neutron_PeakAmpScaledVX",
+    neutron_PeakAmpScaledVX =       scaledNeutronDir.make<TProfile>("neutron_PeakAmpScaledVX",
         "Peak Amp per Hit vs X position (distance from APA in cm) for neutrons", nBinsX, xCryoMin, xCryoMax);
-    neutron_PeakAmpScaledVXhist =     scaledNeutronDir.make<TH1D>("neutron_PeakAmpScaledVXhist",
+    neutron_PeakAmpScaledVXhist =   scaledNeutronDir.make<TH1D>("neutron_PeakAmpScaledVXhist",
         "Peak Amp per Hit vs X position (distance from APA in cm) for neutrons", nBinsX, xCryoMin, xCryoMax);
-    neutron_IntegralScaledVX =        scaledNeutronDir.make<TProfile>("neutron_IntegralScaledVX",
+    neutron_IntegralScaledVX =      scaledNeutronDir.make<TProfile>("neutron_IntegralScaledVX",
         "Peak Amp per Hit vs X position (distance from APA in cm) for neutrons", nBinsX, xCryoMin, xCryoMax);
-    neutron_IntegralScaledVXhist =    scaledNeutronDir.make<TH1D>("neutron_IntegralScaledVXhist",
+    neutron_IntegralScaledVXhist =  scaledNeutronDir.make<TH1D>("neutron_IntegralScaledVXhist",
         "Integral per Hit vs X position (distance from APA in cm) for neutrons", nBinsX, xCryoMin, xCryoMax);
-    neutron_PEScaledVX =              scaledNeutronDir.make<TProfile>("neutron_PEScaledVX",
+    neutron_HitPEScaledVX =            scaledNeutronDir.make<TProfile>("neutron_HitPEScaledVX",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for neutrons", nBinsX, xCryoMin, xCryoMax);
-    neutron_PEScaledVXhist =          scaledNeutronDir.make<TH1D>("neutron_PEScaledVXhist",
+    neutron_HitPEScaledVXhist =        scaledNeutronDir.make<TH1D>("neutron_HitPEScaledVXhist",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for neutrons", nBinsX, xCryoMin, xCryoMax);
 
     
@@ -527,27 +539,29 @@ namespace Nyarlathotep {
         "Plot of the Hit Integral Values vs X position (Distance from APA in cm)", nBinsX, xCryoMin, xCryoMax);
     fIntegralVXhist =         unscaledAllParticlesDir.make<TH1D>("fIntegralVXhist", 
         "Plot of Summed Hit Integral Values vs X position (Distance from APA in cm)", nBinsX, xCryoMin, xCryoMax);
-    fPEVX =                   unscaledAllParticlesDir.make<TProfile>("fPEVX", 
+    fHitPEVX =                   unscaledAllParticlesDir.make<TProfile>("fHitPEVX", 
         "Plot of the number of Detected Photo Electrons per OpHit vs X position (Distance from APA in cm)", nBinsX, xCryoMin, xCryoMax);
-    fPEVXhist =               unscaledAllParticlesDir.make<TH1D>("fPEVXhist", 
-        "Plot of the number of Detected Photo Electrons per OpHit vs X position (Distance from APA in cm)", nBinsX, xCryoMin, xCryoMax);
+    fHitPEVXhist =               unscaledAllParticlesDir.make<TH1D>("fHitPEVXhist", 
+        "Plot of the number of Detected Photo Electrons vs X position (Distance from APA in cm)", nBinsX, xCryoMin, xCryoMax);
+    fFlashPEsHist =                 unscaledAllParticlesDir.make<TH1D>("fFlashPEsHist", 
+        "Plot of the number of Detected Photo Electrons per Flash", nPEsBins, nPEsMin, nPEsMax);
     localTop_PeakAmpVX =      unscaledAllParticlesDir.make<TProfile>("fromTop_PeakAmpVX", 
         "Peak Amplitude per hit vs X (distance from APA in cm) for particles from the top of the TPC", nBinsX, xCryoMin, xCryoMax);
     localTop_IntegralVX =     unscaledAllParticlesDir.make<TProfile>("fromTop_IntegralVX", 
         "Integral per hit vs X (distance from APA in cm) for particles from the top of the TPC", nBinsX, xCryoMin, xCryoMax);
-    localTop_PEVX =           unscaledAllParticlesDir.make<TProfile>("fromTop_PEsVsXpos", 
+    localTop_HitPEVX =           unscaledAllParticlesDir.make<TProfile>("fromTop_PEsVsXpos", 
         "Photo Electrons per ophit vs X (distance from APA) for particles from the top of the TPC", nBinsX, xCryoMin, xCryoMax);
     localSides_PeakAmpVX =    unscaledAllParticlesDir.make<TProfile>("fromSides_PeakAmpVX",
         "Plot of the Hit Peak Amplitudes vs X ositions (distance from APA in cm) for particles from the sides of the TPC", nBinsX, xCryoMin, xCryoMax);
     localSides_IntegralVX =   unscaledAllParticlesDir.make<TProfile>("fromSides_IntegralVX",
         "Integral values per hit vs X position (distance from APA in cm) for particles from the TPC sides" , nBinsX, xCryoMin, xCryoMax);
-    localSides_PEVX =         unscaledAllParticlesDir.make<TProfile>("fromSides_PEVX", 
+    localSides_HitPEVX =         unscaledAllParticlesDir.make<TProfile>("fromSides_HitPEVX", 
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for particles from the TPC sides" , nBinsX, xCryoMin, xCryoMax);
     localAPA_PeakAmpVX =      unscaledAllParticlesDir.make<TProfile>("fromAPA_PeakAmpVX", 
         "Peak Amp per hit vs X position (distance from APA in cm) for particles from the APA", nBinsX, xCryoMin, xCryoMax);
     localAPA_IntegralVX =     unscaledAllParticlesDir.make<TProfile>("fromAPA_IntegralVX",
         "Integral per hit Vs X position (distance from APA in cm) for particles from the APA", nBinsX, xCryoMin, xCryoMax);
-    localAPA_PEVX =           unscaledAllParticlesDir.make<TProfile>("fromAPA_PEVX",
+    localAPA_HitPEVX =           unscaledAllParticlesDir.make<TProfile>("fromAPA_HitPEVX",
         "PhotoElectrons per OpHit Vs X position (distance from APA in cm) for particles from the APA", nBinsX, xCryoMin, xCryoMax);
     muon_PeakAmpVX =          unscaledMuonDir.make<TProfile>("muon_PeakAmpVX",
         "Peak Amp per Hit vs X position (distance from APA in cm) for Muons", nBinsX, xCryoMin, xCryoMax);
@@ -557,10 +571,12 @@ namespace Nyarlathotep {
         "Integral per Hit vs X position (distance from APA in cm) for Muons", nBinsX, xCryoMin, xCryoMax);
     muon_IntegralVXhist =     unscaledMuonDir.make<TH1D>("muon_IntegralVXhist",
         "Integral per Hit vs X position (distance from APA in cm) for Muons", nBinsX, xCryoMin, xCryoMax);
-    muon_PEVX =               unscaledMuonDir.make<TProfile>("muon_PEVX",
+    muon_HitPEVX =               unscaledMuonDir.make<TProfile>("muon_HitPEVX",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for Muons", nBinsX, xCryoMin, xCryoMax);
-    muon_PEVXhist =           unscaledMuonDir.make<TH1D>("muon_PEVXhist",
+    muon_HitPEVXhist =           unscaledMuonDir.make<TH1D>("muon_HitPEVXhist",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for Muons", nBinsX, xCryoMin, xCryoMax);
+//    muon_FlashPEsHist =             unscaledMuonDir.make<TH1D>("muon_FlashPEsHist",
+  //      "PhotoElectrons per Flash for Muons", nPEsBins, nPEsMin, xCryoMax);
     alpha_PeakAmpVX =         unscaledAlphaDir.make<TProfile>("alpha_PeakAmpVX",
         "Peak Amp per Hit vs X position (distance from APA in cm) for Alphas", nBinsX, xCryoMin, xCryoMax);
     alpha_PeakAmpVXhist =     unscaledAlphaDir.make<TH1D>("alpha_PeakAmpVXhist",
@@ -569,10 +585,12 @@ namespace Nyarlathotep {
         "Integral per Hit vs X position (distance from APA in cm) for Alphas", nBinsX, xCryoMin, xCryoMax);
     alpha_IntegralVXhist =    unscaledAlphaDir.make<TH1D>("alpha_IntegralVXhist",
         "Integral per Hit vs X position (distance from APA in cm) for Alphas", nBinsX, xCryoMin, xCryoMax);
-    alpha_PEVX =              unscaledAlphaDir.make<TProfile>("alpha_PEVX",
+    alpha_HitPEVX =              unscaledAlphaDir.make<TProfile>("alpha_HitPEVX",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for Alphas", nBinsX, xCryoMin, xCryoMax);
-    alpha_PEVXhist =          unscaledAlphaDir.make<TH1D>("alpha_PEVXhist",
+    alpha_HitPEVXhist =          unscaledAlphaDir.make<TH1D>("alpha_HitPEVXhist",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for Alphas", nBinsX, xCryoMin, xCryoMax);
+//    alpha_FlashPEsHist =          unscaledAlphaDir.make<TH1D>("alpha_FlashPEsHist",
+  //      "PhotoElectrons per Flash for Alphas", nPEsBins, nPEsMin, nPEsMax);
     beta_PeakAmpVX =          unscaledBetaDir.make<TProfile>("beta_PeakAmpVX",
         "Peak Amp per Hit vs X position (distance from APA in cm) for Betas", nBinsX, xCryoMin, xCryoMax);
     beta_PeakAmpVXhist =      unscaledBetaDir.make<TH1D>("beta_PeakAmpVXhist",
@@ -581,10 +599,12 @@ namespace Nyarlathotep {
         "Integral per Hit vs X position (distance from APA in cm) for Betas", nBinsX, xCryoMin, xCryoMax);
     beta_IntegralVXhist =     unscaledBetaDir.make<TH1D>("beta_IntegralVXhist",
         "Integral per Hit vs X position (distance from APA in cm) for Betas", nBinsX, xCryoMin, xCryoMax);
-    beta_PEVX =               unscaledBetaDir.make<TProfile>("beta_PEVX",
+    beta_HitPEVX =               unscaledBetaDir.make<TProfile>("beta_HitPEVX",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for Betas", nBinsX, xCryoMin, xCryoMax);
-    beta_PEVXhist =           unscaledBetaDir.make<TH1D>("beta_PEVXhist",
+    beta_HitPEVXhist =           unscaledBetaDir.make<TH1D>("beta_HitPEVXhist",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for Betas", nBinsX, xCryoMin, xCryoMax);
+//    beta_FlashPEsHist =           unscaledBetaDir.make<TH1D>("beta_FlashPEsHist",
+  //      "PhotoElectrons per OpFlash for Betas", nPEsBins, nPEsMin, nPEsMax);
     gamma_PeakAmpVX =         unscaledGammaDir.make<TProfile>("gamma_PeakAmpVX",
         "Peak Amp per Hit vs X position (distance from APA in cm) for gammas", nBinsX, xCryoMin, xCryoMax);
     gamma_PeakAmpVXhist =     unscaledGammaDir.make<TH1D>("gamma_PeakAmpVXhist",
@@ -593,10 +613,12 @@ namespace Nyarlathotep {
         "Peak Amp per Hit vs X position (distance from APA in cm) for gammas", nBinsX, xCryoMin, xCryoMax);
     gamma_IntegralVXhist =    unscaledGammaDir.make<TH1D>("gamma_IntegralVXhist",
         "Integral per Hit vs X position (distance from APA in cm) for gammas", nBinsX, xCryoMin, xCryoMax);
-    gamma_PEVX =              unscaledGammaDir.make<TProfile>("gamma_PEVX",
+    gamma_HitPEVX =              unscaledGammaDir.make<TProfile>("gamma_HitPEVX",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for gammas", nBinsX, xCryoMin, xCryoMax);
-    gamma_PEVXhist =          unscaledGammaDir.make<TH1D>("gamma_PEVXhist",
+    gamma_HitPEVXhist =          unscaledGammaDir.make<TH1D>("gamma_HitPEVXhist",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for gammas", nBinsX, xCryoMin, xCryoMax);
+//    gamma_FlashPEsHist =          unscaledGammaDir.make<TH1D>("gamma_FlashPEsHist",
+  //      "PhotoElectrons per OpFlash for gammas", nPEsBins, nPEsMin, nPEsMax);
     neutron_PeakAmpVX =         scaledNeutronDir.make<TProfile>("neutron_PeakAmpVX",
         "Peak Amp per Hit vs X position (distance from APA in cm) for neutrons", nBinsX, xCryoMin, xCryoMax);
     neutron_PeakAmpVXhist =     scaledNeutronDir.make<TH1D>("neutron_PeakAmpVXhist",
@@ -605,10 +627,12 @@ namespace Nyarlathotep {
         "Peak Amp per Hit vs X position (distance from APA in cm) for neutrons", nBinsX, xCryoMin, xCryoMax);
     neutron_IntegralVXhist =    scaledNeutronDir.make<TH1D>("neutron_IntegralVXhist",
         "Integral per Hit vs X position (distance from APA in cm) for neutrons", nBinsX, xCryoMin, xCryoMax);
-    neutron_PEVX =              scaledNeutronDir.make<TProfile>("neutron_PEVX",
+    neutron_HitPEVX =              scaledNeutronDir.make<TProfile>("neutron_HitPEVX",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for neutrons", nBinsX, xCryoMin, xCryoMax);
-    neutron_PEVXhist =          scaledNeutronDir.make<TH1D>("neutron_PEVXhist",
+    neutron_HitPEVXhist =          scaledNeutronDir.make<TH1D>("neutron_HitPEVXhist",
         "PhotoElectrons per OpHit vs X position (distance from APA in cm) for neutrons", nBinsX, xCryoMin, xCryoMax);
+//    neutron_FlashPEsHist =          scaledNeutronDir.make<TH1D>("neutron_FlashPEsHist",
+  //      "PhotoElectrons per OpFlash for neutrons", nPEsBins, nPEsMin, nPEsMax);
 
   }
   
@@ -625,6 +649,7 @@ namespace Nyarlathotep {
     std::cout<<"reconfigure\n";
     fHitLabel             = parameterSet.get< std::string >("HitLabel");
     fOpHitLabel           = parameterSet.get< std::string >("PhotLabel");
+    fOpFlashLabel           = parameterSet.get< std::string >("PhotLabel", "opflash");
     fBTRLabel             = parameterSet.get< std::string >("BackTrackerLabel");
     fPBTRLabel            = parameterSet.get< std::string >("PhotonBackTrackerLabel");
      
@@ -651,18 +676,23 @@ namespace Nyarlathotep {
   {
     global_event = evt.id().event();
     art::Handle< std::vector< recob::Hit > > hitHandle;
-    std::vector< art::Ptr< recob::Hit > > hitlist;
+    std::vector< art::Ptr< recob::Hit > > hitList;
     if (evt.getByLabel(fHitLabel, hitHandle) )
-      art::fill_ptr_vector(hitlist, hitHandle);
+      art::fill_ptr_vector(hitList, hitHandle);
 
-    art::Handle< std::vector< recob::OpHit > > ophitHandle;
-    std::vector< art::Ptr< recob::OpHit > > ophitlist;
-    if (evt.getByLabel(fOpHitLabel, ophitHandle) )
-      art::fill_ptr_vector(ophitlist, ophitHandle);
+    art::Handle< std::vector< recob::OpHit > > opHitHandle;
+    std::vector< art::Ptr< recob::OpHit > > opHitList;
+    if (evt.getByLabel(fOpHitLabel, opHitHandle) )
+      art::fill_ptr_vector(opHitList, opHitHandle);
+    
+    art::Handle< std::vector< recob::OpFlash > > opFlashHandle;
+    std::vector< art::Ptr< recob::OpFlash > > opFlashList;
+    if (evt.getByLabel(fOpFlashLabel, opFlashHandle) )
+      art::fill_ptr_vector(opFlashList, opFlashHandle);
 
     //Call Charge events.
-//    for(art::Ptr<recob::Hit> const& ptrHit: hitlist){
-    for( auto ptrHit: hitlist){
+
+    for( auto ptrHit: hitList){
       try{
         recob::Hit hit = *ptrHit;
         double hitInt = hit.Integral();
@@ -806,7 +836,7 @@ namespace Nyarlathotep {
 
     //Call Op Events
 
-    for(const art::Ptr<recob::OpHit>& ptrOpHit: ophitlist){
+    for(const art::Ptr<recob::OpHit>& ptrOpHit: opHitList){
       try{
         recob::OpHit opHit = *ptrOpHit;
         //need position,
@@ -823,48 +853,48 @@ namespace Nyarlathotep {
             scaleTot += scaleEn;
             std::vector<double> const evePos = { particle->Trajectory().X(0),  particle->Trajectory().Y(0), particle->Trajectory().Z(0) };
             if( (evePos.at(2)>= zTpcMin-edgeDelta && evePos.at(2)<= zTpcMin + edgeDelta ) || (evePos.at(2)>= zTpcMax - edgeDelta && evePos.at(2)<= zTpcMax+edgeDelta)){ //side
-              localSides_PEScaledVX  ->Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              localSides_PEVX  ->Fill(xyzPos.at(0),nPE*scaleFrac);
+              localSides_HitPEScaledVX  ->Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              localSides_HitPEVX  ->Fill(xyzPos.at(0),nPE*scaleFrac);
             }else if( (evePos.at(1)>= yTpcMax - edgeDelta && evePos.at(1) <= yTpcMax + edgeDelta) ){ //Top
-              localTop_PEScaledVX    ->Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              localTop_PEVX    ->Fill(xyzPos.at(0),nPE*scaleFrac);
+              localTop_HitPEScaledVX    ->Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              localTop_HitPEVX    ->Fill(xyzPos.at(0),nPE*scaleFrac);
             }else if( (evePos.at(0) >= 0-edgeDelta && evePos.at(0) <= 0+edgeDelta ) ){ //APA
-              localAPA_PEScaledVX    ->Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              localAPA_PEVX    ->Fill(xyzPos.at(0),nPE*scaleFrac);
+              localAPA_HitPEScaledVX    ->Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              localAPA_HitPEVX    ->Fill(xyzPos.at(0),nPE*scaleFrac);
             }else if( (evePos.at(0) >= xTpcMax-edgeDelta && evePos.at(0) <= xTpcMax+edgeDelta ) ){ //CPA
-              localCPA_PEScaledVX    ->Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              localCPA_PEVX    ->Fill(xyzPos.at(0),nPE*scaleFrac);
+              localCPA_HitPEScaledVX    ->Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              localCPA_HitPEVX    ->Fill(xyzPos.at(0),nPE*scaleFrac);
             }
   
             if( abs(pid)==13 ){
-              muon_PEScaledVX       -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              muon_PEScaledVXhist   -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              muon_PEVX             -> Fill(xyzPos.at(0),nPE*scaleFrac);
-              muon_PEVXhist         -> Fill(xyzPos.at(0),nPE*scaleFrac);
+              muon_HitPEScaledVX       -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              muon_HitPEScaledVXhist   -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              muon_HitPEVX             -> Fill(xyzPos.at(0),nPE*scaleFrac);
+              muon_HitPEVXhist         -> Fill(xyzPos.at(0),nPE*scaleFrac);
             }else if( abs(pid)==11 ){
-              fBeta_PEVXZ           -> Fill(xyzPos.at(0), xyzPos.at(2), nPE*scaleFrac);
-              beta_PEScaledVX       -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              beta_PEScaledVXhist   -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              beta_PEVX             -> Fill(xyzPos.at(0),nPE*scaleFrac);
-              beta_PEVXhist         -> Fill(xyzPos.at(0),nPE*scaleFrac);
+              fBeta_HitPEVXZ           -> Fill(xyzPos.at(0), xyzPos.at(2), nPE*scaleFrac);
+              beta_HitPEScaledVX       -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              beta_HitPEScaledVXhist   -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              beta_HitPEVX             -> Fill(xyzPos.at(0),nPE*scaleFrac);
+              beta_HitPEVXhist         -> Fill(xyzPos.at(0),nPE*scaleFrac);
             }else if( abs(pid)==22){
-              fGamma_PEVXZ          -> Fill(xyzPos.at(0), xyzPos.at(2), nPE*scaleFrac);
-              gamma_PEScaledVX      -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              gamma_PEScaledVXhist  -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              gamma_PEVX            -> Fill(xyzPos.at(0),nPE*scaleFrac);
-              gamma_PEVXhist        -> Fill(xyzPos.at(0),nPE*scaleFrac);
+              fGamma_HitPEVXZ          -> Fill(xyzPos.at(0), xyzPos.at(2), nPE*scaleFrac);
+              gamma_HitPEScaledVX      -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              gamma_HitPEScaledVXhist  -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              gamma_HitPEVX            -> Fill(xyzPos.at(0),nPE*scaleFrac);
+              gamma_HitPEVXhist        -> Fill(xyzPos.at(0),nPE*scaleFrac);
             }else if( pid==1000020040 ){
-              fAlpha_PEVXZ          -> Fill(xyzPos.at(0), xyzPos.at(2), nPE*scaleFrac);
-              alpha_PEScaledVX      -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              alpha_PEScaledVXhist  -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              alpha_PEVX            -> Fill(xyzPos.at(0),nPE*scaleFrac);
-              alpha_PEVXhist        -> Fill(xyzPos.at(0),nPE*scaleFrac);
+              fAlpha_HitPEVXZ          -> Fill(xyzPos.at(0), xyzPos.at(2), nPE*scaleFrac);
+              alpha_HitPEScaledVX      -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              alpha_HitPEScaledVXhist  -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              alpha_HitPEVX            -> Fill(xyzPos.at(0),nPE*scaleFrac);
+              alpha_HitPEVXhist        -> Fill(xyzPos.at(0),nPE*scaleFrac);
             }else if ( abs(pid) == 2212 ){
-              fNeutron_PEVXZ          -> Fill(xyzPos.at(0), xyzPos.at(2), nPE*scaleFrac);
-              neutron_PEScaledVX      -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              neutron_PEScaledVXhist  -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
-              neutron_PEVX            -> Fill(xyzPos.at(0),nPE*scaleFrac);
-              neutron_PEVXhist        -> Fill(xyzPos.at(0),nPE*scaleFrac);
+              fNeutron_HitPEVXZ          -> Fill(xyzPos.at(0), xyzPos.at(2), nPE*scaleFrac);
+              neutron_HitPEScaledVX      -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              neutron_HitPEScaledVXhist  -> Fill(xyzPos.at(0),nPE*scaleFrac/scaleEn);
+              neutron_HitPEVX            -> Fill(xyzPos.at(0),nPE*scaleFrac);
+              neutron_HitPEVXhist        -> Fill(xyzPos.at(0),nPE*scaleFrac);
             }
           }//End for(eveSDP)
         }
@@ -872,18 +902,41 @@ namespace Nyarlathotep {
           scaleTot=1.0;
         }
         //Write globals
-        fPEScaledVX -> Fill(xyzPos.at(0), nPE/scaleTot);
-        fPEScaledVXhist -> Fill(xyzPos.at(0), nPE/scaleTot);
-        fPEVX -> Fill(xyzPos.at(0), nPE);
-        fPEVXhist -> Fill(xyzPos.at(0), nPE);
+        fHitPEScaledVX -> Fill(xyzPos.at(0), nPE/scaleTot);
+        fHitPEScaledVXhist -> Fill(xyzPos.at(0), nPE/scaleTot);
+        fHitPEVX -> Fill(xyzPos.at(0), nPE);
+        fHitPEVXhist -> Fill(xyzPos.at(0), nPE);
 
-        fPEVXZ->Fill(xyzPos.at(0), xyzPos.at(2), nPE);
+        fHitPEVXZ->Fill(xyzPos.at(0), xyzPos.at(2), nPE);
 
       }//end try
       catch(...){//Lazy catch. Need to catch -No sim SDPs found- error.
    //     throw;
       }
     }//End for(OpHit)
+
+    //Call OpFlashes
+    for( auto ptrOpFlash : opFlashList ){
+      double nPEcount = ptrOpFlash->TotalPE();
+     /*
+      *std::vector<double> nPEs = ptrOpFlash->PEs();
+      *for( double nPE : nPEs ){
+      *  if( abs(pid)==13 ){
+      *    muon_FlashPEsHist           -> Fill(nPEcount);
+      *  }else if( abs(pid)==11 ){
+      *    beta_FlashPEsHist           -> Fill(nPEcount);
+      *  }else if( abs(pid)==22){
+      *    gamma_FlashPEsHist          -> Fill(nPEcount);
+      *  }else if( pid==1000020040 ){
+      *    alpha_FlashPEsHist          -> Fill(nPEcount);
+      *  }else if ( abs(pid) == 2212 ){
+      *    neutron_FlashPEsHist        -> Fill(nPEcount);
+      *  }
+      *}
+      */
+      fFlashPEsHist->Fill( nPEcount );
+    }
+
     
 
   } // Nyarlathotep::analyze()
