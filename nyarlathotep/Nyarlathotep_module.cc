@@ -112,6 +112,7 @@ namespace Nyarlathotep {
 
   private:
 
+    int nEvt =0;
     int nPEsBins = 51;
     double nPEsMin = -0.5;
     double nPEsMax = 50.5;
@@ -640,6 +641,8 @@ namespace Nyarlathotep {
    //-----------------------------------------------------------------------
   void Nyarlathotep::endJob()
   {
+    std::cout<<"Flow Check. End Job\n Scaling by"<<(1/( double (nEvt) ))<<"\n" ;
+      fFlashPEsHist->Scale( (1/( double (nEvt) )) );
 
   }
   //-----------------------------------------------------------------------
@@ -649,7 +652,7 @@ namespace Nyarlathotep {
     std::cout<<"reconfigure\n";
     fHitLabel             = parameterSet.get< std::string >("HitLabel");
     fOpHitLabel           = parameterSet.get< std::string >("PhotLabel");
-    fOpFlashLabel           = parameterSet.get< std::string >("PhotLabel", "opflash");
+    fOpFlashLabel         = parameterSet.get< std::string >("FlashLabel", "opflash");
     fBTRLabel             = parameterSet.get< std::string >("BackTrackerLabel");
     fPBTRLabel            = parameterSet.get< std::string >("PhotonBackTrackerLabel");
      
@@ -674,6 +677,7 @@ namespace Nyarlathotep {
   //-----------------------------------------------------------------------
   void Nyarlathotep::analyze(const art::Event& evt) 
   {
+    nEvt++;
     global_event = evt.id().event();
     art::Handle< std::vector< recob::Hit > > hitHandle;
     std::vector< art::Ptr< recob::Hit > > hitList;
@@ -687,8 +691,9 @@ namespace Nyarlathotep {
     
     art::Handle< std::vector< recob::OpFlash > > opFlashHandle;
     std::vector< art::Ptr< recob::OpFlash > > opFlashList;
-    if (evt.getByLabel(fOpFlashLabel, opFlashHandle) )
+    if (evt.getByLabel(fOpFlashLabel, opFlashHandle) ){
       art::fill_ptr_vector(opFlashList, opFlashHandle);
+    }
 
     //Call Charge events.
 
