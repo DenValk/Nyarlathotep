@@ -642,8 +642,65 @@ namespace Nyarlathotep {
   void Nyarlathotep::endJob()
   {
     std::cout<<"Flow Check. End Job\n Scaling by"<<(1/( double (nEvt) ))<<"\n" ;
-      fFlashPEsHist->Scale( (1/( double (nEvt) )) );
+    fFlashPEsHist->Scale( (1/( double (nEvt) )) );
+    fDeltaTime->Scale( (1/( double (nEvt) )) );
+    fPeakAmpVXZ->Scale( (1/( double (nEvt) )) );
+    fIntegralVXZ->Scale( (1/( double (nEvt) )) );
+    fHitPEVXZ->Scale( (1/( double (nEvt) )) );
+    fAlpha_PeakAmpVXZ->Scale( (1/( double (nEvt) )) );
+    fAlpha_IntegralVXZ->Scale( (1/( double (nEvt) )) );
+    fAlpha_HitPEVXZ->Scale( (1/( double (nEvt) )) );
+    fBeta_PeakAmpVXZ->Scale( (1/( double (nEvt) )) );
+    fBeta_IntegralVXZ->Scale( (1/( double (nEvt) )) );
+    fBeta_HitPEVXZ->Scale( (1/( double (nEvt) )) );
+    fGamma_PeakAmpVXZ->Scale( (1/( double (nEvt) )) );
+    fGamma_IntegralVXZ->Scale( (1/( double (nEvt) )) );
+    fGamma_HitPEVXZ->Scale( (1/( double (nEvt) )) );
 
+    fNeutron_PeakAmpVXZ->Scale( (1/( double (nEvt) )) );
+    fNeutron_IntegralVXZ->Scale( (1/( double (nEvt) )) );
+    fNeutron_HitPEVXZ->Scale( (1/( double (nEvt) )) );
+
+    //Unscalled Histograms
+    fPeakAmpVXhist->Scale( (1/( double (nEvt) )) );
+    fIntegralVXhist->Scale( (1/( double (nEvt) )) );
+    fHitPEVXhist->Scale( (1/( double (nEvt) )) );
+    fFlashPEsHist->Scale( (1/( double (nEvt) )) );
+    muon_PeakAmpVXhist->Scale( (1/( double (nEvt) )) );
+    muon_IntegralVXhist->Scale( (1/( double (nEvt) )) );
+    muon_HitPEVXhist->Scale( (1/( double (nEvt) )) );
+    alpha_PeakAmpVXhist->Scale( (1/( double (nEvt) )) );
+    alpha_IntegralVXhist->Scale( (1/( double (nEvt) )) );
+    alpha_HitPEVXhist->Scale( (1/( double (nEvt) )) );
+    beta_PeakAmpVXhist->Scale( (1/( double (nEvt) )) );
+    beta_IntegralVXhist->Scale( (1/( double (nEvt) )) );
+    beta_HitPEVXhist->Scale( (1/( double (nEvt) )) );
+    gamma_PeakAmpVXhist->Scale( (1/( double (nEvt) )) );
+    gamma_IntegralVXhist->Scale( (1/( double (nEvt) )) );
+    gamma_HitPEVXhist->Scale( (1/( double (nEvt) )) );
+    neutron_PeakAmpVXhist->Scale( (1/( double (nEvt) )) );
+    neutron_IntegralVXhist->Scale( (1/( double (nEvt) )) );
+    neutron_HitPEVXhist->Scale( (1/( double (nEvt) )) );
+
+    //Scaled histograms
+    fPeakAmpScaledVXhist->Scale( (1/( double (nEvt) )) );
+    fIntegralScaledVXhist->Scale( (1/( double (nEvt) )) );
+    fHitPEScaledVXhist->Scale( (1/( double (nEvt) )) );
+    muon_PeakAmpScaledVXhist->Scale( (1/( double (nEvt) )) );
+    muon_IntegralScaledVXhist->Scale( (1/( double (nEvt) )) );
+    muon_HitPEScaledVXhist->Scale( (1/( double (nEvt) )) );
+    alpha_PeakAmpScaledVXhist->Scale( (1/( double (nEvt) )) );
+    alpha_IntegralScaledVXhist->Scale( (1/( double (nEvt) )) );
+    alpha_HitPEScaledVXhist->Scale( (1/( double (nEvt) )) );
+    beta_PeakAmpScaledVXhist->Scale( (1/( double (nEvt) )) );
+    beta_IntegralScaledVXhist->Scale( (1/( double (nEvt) )) );
+    beta_HitPEScaledVXhist->Scale( (1/( double (nEvt) )) );
+    gamma_PeakAmpScaledVXhist->Scale( (1/( double (nEvt) )) );
+    gamma_IntegralScaledVXhist->Scale( (1/( double (nEvt) )) );
+    gamma_HitPEScaledVXhist->Scale( (1/( double (nEvt) )) );
+    neutron_PeakAmpScaledVXhist->Scale( (1/( double (nEvt) )) );
+    neutron_IntegralScaledVXhist->Scale( (1/( double (nEvt) )) );
+    neutron_HitPEScaledVXhist->Scale( (1/( double (nEvt) )) );
   }
   //-----------------------------------------------------------------------
   void Nyarlathotep::reconfigure(fhicl::ParameterSet const& parameterSet)
@@ -836,7 +893,7 @@ namespace Nyarlathotep {
       }catch(...){
 
       }//end trycatch
-    }
+    }//end for(hits)
 
 
     //Call Op Events
