@@ -13,7 +13,6 @@
 // LArSoft includes
 #include "lardataobj/RecoBase/OpHit.h"
 #include "lardataobj/RecoBase/OpFlash.h"
-#include "larcore/Geometry/Geometry.h"
 #include "larcorealg/Geometry/GeometryCore.h"
 #include "larcore/CoreUtils/ServiceUtil.h"
 
@@ -28,10 +27,12 @@
 #include "art/Framework/Services/Optional/TFileService.h"
 #include "art/Framework/Services/Optional/TFileDirectory.h"
 #include "art/Framework/Core/ModuleMacros.h"
+#include "canvas/Persistency/Common/FindMany.h"
 #include "canvas/Persistency/Common/FindManyP.h"
 #include "canvas/Persistency/Common/Ptr.h"
 #include "canvas/Persistency/Common/PtrVector.h"
 #include "canvas/Utilities/Exception.h"
+#include "nusimdata/SimulationBase/MCParticle.h"
 //#include "art/Persistency/Common/PtrVector.h"
 //#include "art/Utilities/Exception.h"
 //#include "fhiclcpp/ParameterSet.h"
@@ -132,12 +133,15 @@ namespace Nyarlathotep {
     art::ServiceHandle<art::TFileService>        tfs;
     art::ServiceHandle<cheat::PhotonBackTracker> pbt;
     art::ServiceHandle<cheat::BackTracker>       bt;
+    std::unique_ptr<art::TFileDirectory> generatorPlotsPtr;
     geo::GeometryCore const* geom = lar::providerFrom<geo::Geometry>();
 //    art::ServiceHandle<geo::Geometry> geom;
 
     Double_t xCryoMin, xCryoMax, yCryoMin, yCryoMax, zCryoMin, zCryoMax, xTpcMin, xTpcMax, yTpcMin, yTpcMax, zTpcMin, zTpcMax, edgeDelta;
 
-//    std::map<std::string, TH1D*> generatorIntegrals;
+    int nBinsX = 1;
+
+    std::map<std::string, TH1D*> generatorIntegrals;
 //    std::map<std::string, TH1D*> generatorPEs;
 
     TH1D* fDeltaTime;
@@ -225,6 +229,7 @@ namespace Nyarlathotep {
   //-----------------------------------------------------------------------
   void Nyarlathotep::beginJob()
   {
+    std::cout<<"Begin Job\n";
 
     for(geo::CryostatID const& cID: geom->IterateCryostatIDs()){
       Double_t* bounds = new double[6];
@@ -246,7 +251,7 @@ namespace Nyarlathotep {
       zTpcMin = std::min(zTpcMin, TPC.MinZ());
       zTpcMax = std::max(zTpcMax, TPC.MaxZ());
     }
-    int nBinsX = 1;
+    nBinsX = 1;
     int nBinsXPE = 1;
     //int nBinsX = int((xCryoMax - xCryoMin)/10);
     {
@@ -269,7 +274,7 @@ namespace Nyarlathotep {
     art::TFileDirectory gammaDir              = tfs->mkdir("gammas", "Contains histograms of gamma hit information. ");
     art::TFileDirectory neutronDir            = tfs->mkdir("neutrons", "Contains histograms of neutron hit information");
 
-//    art::TFileDirectory generatorPlots         = allParticleDir.mkdir("generatorPlots", "Contains histograms for each generator process");
+    generatorPlotsPtr = std::make_unique<art::TFileDirectory>(allParticleDir.mkdir("generators", "Contains histograms for each generator process"));
 
     art::TFileDirectory scaledAllParticlesDir      = allParticleDir.mkdir("scale_AllParticles", "Contains scaled histograms with all hit information ");
     art::TFileDirectory scaledMuonDir             = muonDir.mkdir("scale_Muons",        "Contains scaled histograms of muon hit information. ");
@@ -573,6 +578,7 @@ namespace Nyarlathotep {
   //-----------------------------------------------------------------------
   void Nyarlathotep::analyze(const art::Event& evt) 
   {
+    std::cout<<"Analyze\n";
     nEvt++;
     global_event = evt.id().event();
     art::Handle< std::vector< recob::Hit > > hitHandle;
@@ -591,6 +597,30 @@ namespace Nyarlathotep {
       art::fill_ptr_vector(opFlashList, opFlashHandle);
     }
 
+
+    std::vector< art::Handle< std::vector< simb::MCParticle > > > mcHandles;
+    evt.getManyByType(mcHandles);
+    std::map< simb::MCParticle, std::string> mPartToLabel;
+    
+    for( auto const& mcHandle : mcHandles ){
+      const std::string& sModuleLabel = mcHandle.provenance()->moduleLabel();
+      //I have the label here. I can use that to mimic DAQSimAna
+      auto mcTrue = evt.getValidHandle<std::vector<simb::MCTruth> >(sModuleLabel);
+      art::FindManyP<simb::MCParticle> findMCParts(mcTrue, evt, "largeant" );
+      std::vector<art::Ptr<simb::MCParticle > > mcParts = findMCParts.at(1);
+      for(const art::Ptr<simb::MCParticle > ptr : mcParts){
+        simb::MCParticle part = *ptr;
+        mPartToLabel[part] = sModuleLabel;
+      }
+      std::string sPlotTitle = "Plot of Integrated Charge collected from generator ";
+      sPlotTitle.append(sModuleLabel);
+      if(generatorIntegrals.find(sModuleLabel) == generatorIntegrals.end()){
+        TH1D* tmpHist = generatorPlotsPtr->make<TH1D>(sModuleLabel.c_str(),  sPlotTitle.c_str(), nBinsX, xCryoMin, xCryoMax);
+        generatorIntegrals[sModuleLabel] = std::move(tmpHist);
+      }
+    }
+
+
     //Call Charge events.
 
     for( auto ptrHit: hitList){
@@ -606,8 +636,9 @@ namespace Nyarlathotep {
           auto tID = eveIDE.trackID;
           const simb::MCParticle* particle=bt->TrackIDToParticle(tID);
           if(particle){
-            //Process Name Calculation Goes HERE!!
-//            std::string processName = "";
+            //Look up the Label of the generator of this particle
+            std::string processName = mPartToLabel[*particle];
+            TH1D* genIntHist = generatorIntegrals[processName];
             int pid =  particle->PdgCode();
             double scaleFrac = eveIDE.energyFrac;
             double scaleEn   = eveIDE.energy;
@@ -677,13 +708,15 @@ namespace Nyarlathotep {
               neutron_PeakAmpVXhist           -> Fill(xyzPos.at(0), hitAmp*scaleFrac);
               neutron_IntegralVXhist          -> Fill(xyzPos.at(0), hitInt*scaleFrac);
             }
-          }
+            genIntHist->Fill(xyzPos.at(0), hitInt*scaleFrac);
+          }//End If Particle
         }
         if(scaleTot<1.0e-10){
           scaleTot=1.0;
         }
         //Write globals
         //write globals
+
         fPeakAmpVXhist ->Fill(xyzPos.at(0), hitAmp);
         fIntegralVXhist->Fill(xyzPos.at(0), hitInt);
         fPeakAmpScaledVXhist ->Fill(xyzPos.at(0), hitAmp/scaleTot);
