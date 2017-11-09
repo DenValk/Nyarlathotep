@@ -38,7 +38,6 @@
 //#include "art/Utilities/Exception.h"
 //#include "fhiclcpp/ParameterSet.h"
 #include "messagefacility/MessageLogger/MessageLogger.h"
-//#include "messagefacility/Utilities/eception.h"
 
 // ROOT includes. Note: To look up the properties of the ROOT classes,
 // use the ROOT web site; e.g.,
@@ -63,8 +62,8 @@
 #include <cmath>
 #include <iostream>
 
-extern int global_event;   
-int global_event=0;   
+extern int global_event;
+int global_event=0;
 /////////////////////////////ANONYMOUS NAMESPACE
 namespace {
   /*
@@ -169,10 +168,21 @@ namespace Nyarlathotep {
     TH1D* fIntegralScaledVXhist;
     TH1D* fHitPEScaledVXhist;
 
-  
+    //Calibration histograms Nov 2017
+    TH1D* fEventCharge;
+    TH1D* fEventLight;
+    TH1D* fNHits_Charge;
+    TH1D* fNHits_Light;
 
-
-
+    TH2D* fZVT_Charge;
+    TH2D* fEventChargeVLight;
+    TH2D* fBinHit_Charge;
+    TH2D* fBinHit_Charge_Buffer;
+    TH2D* fBinHit_Light;
+    TH2D* fBinHit_Light_Buffer;
+    TH2D* fBinNHits_Charge;
+    TH2D* fBinNHits_Light;
+     
   }; // class Nyarlathotep
 
 
@@ -245,51 +255,76 @@ namespace Nyarlathotep {
     */
 
 
-    private_deltaTime     =           private_service_tfs->make<TH1D>    ("h_deltaTime", 
+    private_deltaTime     =           private_service_tfs->make<TH1D>    ("histdeltaTime", 
         "Plot of Times between hits. Restricted to times > 500ns", 4500, 500, 5000);
-    private_trackLength   =           allParticleDir.make<TH1D>("h_trackLengths",
+    private_trackLength   =           allParticleDir.make<TH1D>("hist_trackLengths",
         "Histogram of Track Lengths",1000, 0.0, 100.0  );
-    fOpHitPEs             =           allParticleDir.make<TH1D>("h_OpHitPEs",
+    fOpHitPEs             =           allParticleDir.make<TH1D>("hist_OpHitPEs",
         "Histogram of PEs from each OpHit.",21, -0.5, 20.5  );
-    fHitCharge            =           allParticleDir.make<TH1D>("h_HitCharge",
+    fHitCharge            =           allParticleDir.make<TH1D>("hist_HitCharge",
         "Histogram of #int ADC Units from each Hit",5000, 0.0, 1000.0  );
-    fPeakAmpVXZ           =           allParticleDir.make<TH2D>("h_PeakAmpVXZ",
+    fPeakAmpVXZ           =           allParticleDir.make<TH2D>("hist_PeakAmpVXZ",
         "Histogram of HitPeakAmplitude vs Z Position (cm) and X Position (cm)",
         private_nBinsX, private_xCryoMin, private_xCryoMax, private_nBinsZ,private_zCryoMin,private_zCryoMax );
     fPeakAmpVXZ -> SetYTitle("Z Position (cm)");
     fPeakAmpVXZ -> SetXTitle("X Position (cm)");
 
-    fIntegralVXZ          =           allParticleDir.make<TH2D>("fIntegralVXZ",
+    fIntegralVXZ          =           allParticleDir.make<TH2D>("hist_IntegralVXZ",
         "Histogram of HitIntegral vs Z Position (cm) and X Position (cm)",
         private_nBinsXPE, private_xCryoMin, private_xCryoMax,        private_nBinsZ, private_zCryoMin, private_zCryoMax        );
     fIntegralVXZ-> SetYTitle("Z Position (cm)");
     fIntegralVXZ-> SetZTitle("X Position (cm)");
 
-    fHitPEVXZ             =           allParticleDir.make<TH2D>("fHitPEVXZ",
+    fHitPEVXZ             =           allParticleDir.make<TH2D>("hist_HitPEVXZ",
         "Histogram of PhotoElectrons Detected vs Z Position (cm) and X Position (cm)",
         private_nBinsXPE, private_xCryoMin, private_xCryoMax,        private_nBinsZ, private_zCryoMin, private_zCryoMax        );
     fHitPEVXZ-> SetYTitle("Z Position (cm)");
     fHitPEVXZ-> SetXTitle("X Position (cm)");
 
     //make scaled histograms
-    fPeakAmpScaledVXhist         =    scaledAllParticlesDir.make<TH1D>("fPeakAmpScaledVXhist", 
+    fPeakAmpScaledVXhist         =    scaledAllParticlesDir.make<TH1D>("hist_PeakAmpScaledVXhist", 
         "Plot of Summed Hit Peak Amplitudes vs X position (Distance from APA in cm)", private_nBinsX, private_xCryoMin, private_xCryoMax);
-    fIntegralScaledVXhist        =    scaledAllParticlesDir.make<TH1D>("fIntegralScaledVXhist", 
+    fIntegralScaledVXhist        =    scaledAllParticlesDir.make<TH1D>("hist_IntegralScaledVXhist", 
         "Plot of Summed Hit Integral Values vs X position (Distance from APA in cm)", private_nBinsX, private_xCryoMin, private_xCryoMax);
-    fHitPEScaledVXhist           =    scaledAllParticlesDir.make<TH1D>("fHitPEScaledVXhist", 
+    fHitPEScaledVXhist           =    scaledAllParticlesDir.make<TH1D>("hist_HitPEScaledVXhist", 
         "Plot of the number of Detected Photo Electrons vs X position (Distance from APA in cm)", private_nBinsXPE, private_xCryoMin, private_xCryoMax);
 
     
 
     //Make unscaled Histograms
-    fPeakAmpVXhist               =    unscaledAllParticlesDir.make<TH1D>("fPeakAmpVXhist", 
+    fPeakAmpVXhist               =    unscaledAllParticlesDir.make<TH1D>("hist_PeakAmpVXhist", 
         "Plot of Summed Hit Peak Amplitudes vs X position (Distance from APA in cm)", private_nBinsX, private_xCryoMin, private_xCryoMax);
-    fIntegralVXhist              =    unscaledAllParticlesDir.make<TH1D>("fIntegralVXhist", 
+    fIntegralVXhist              =    unscaledAllParticlesDir.make<TH1D>("hist_IntegralVXhist", 
         "Plot of Summed Hit Integral Values vs X position (Distance from APA in cm)", private_nBinsX, private_xCryoMin, private_xCryoMax);
-    fHitPEVXhist                 =    unscaledAllParticlesDir.make<TH1D>("fHitPEVXhist", 
+    fHitPEVXhist                 =    unscaledAllParticlesDir.make<TH1D>("hist_HitPEVXhist", 
         "Plot of the number of Detected Photo Electrons vs X position (Distance from APA in cm)", private_nBinsX, private_xCryoMin, private_xCryoMax);
-    fFlashPEsHist                =    unscaledAllParticlesDir.make<TH1D>("fFlashPEsHist", 
+    fFlashPEsHist                =    unscaledAllParticlesDir.make<TH1D>("hist_FlashPEsHist", 
         "Plot of the number of Detected Photo Electrons per Flash", private_nPEsBins, private_nPEsMin, private_nPEsMax);
+
+
+    //Make Calibration histograms (2017).
+    art::TFileDirectory calibDir  = allParticleDir.mkdir("CalibrationTestAnalysis","A directory for as of yet unclassified analysis code added for the Nov 2017 Calibration meetings.");
+    fEventCharge                  = calibDir.make<TH1D>("hist_EventCharge", "Total Charge per event.", 5001, -0.5, 5000.5);
+    fEventLight                   = calibDir.make<TH1D>("hist_EventLight", "Total PEs per event.", 501,-0.05,50.05);
+    fNHits_Charge                 = calibDir.make<TH1D>("hist_NHits_Charge", "The number of charge hits in each event.", 101,-0.5,100.5);
+    fNHits_Light                  = calibDir.make<TH1D>("hist_NHits_Light", "The number of optical hits in each event.", 41,-0.5,40.5);
+    fZVT_Charge                   = calibDir.make<TH2D>("hist_ChargeVsZT",  "The charge collected vs Z and T", private_nBinsZ, private_zCryoMin, private_zCryoMax, 1000,0,5000);
+    //Note, no light here. This is because the light should all be at 0 with respect to the TPC.
+    fEventChargeVLight            = calibDir.make<TH2D>("hist_ChargeVLight", "The charge collected vs the light collected", 5001, -0.05, 5000.5, 501, -0.05, 50.05);
+    fBinHit_Charge                = calibDir.make<TH2D>("hist_BinHit_Charge", "Each bin is filled only once per event when a hit is registered in that bin.", 
+        private_nBinsZ, private_zCryoMin, private_zCryoMax, private_nBinsX, private_xCryoMin, private_xCryoMax);
+    fBinHit_Light                 = calibDir.make<TH2D>("hist_BinHit_Light", "Each bin is filled only once per event when an OpHit is registered in that bin.",
+        private_nBinsZ, private_zCryoMin, private_zCryoMax, private_nBinsX, private_xCryoMin, private_xCryoMax);
+    fBinNHits_Charge              = calibDir.make<TH2D>("hist_nBinHit_Charge", "Counts the number of hits in each bin (no charge weighting).",
+        private_nBinsZ, private_zCryoMin, private_zCryoMax, private_nBinsX, private_xCryoMin, private_xCryoMax);
+    fBinNHits_Light               = calibDir.make<TH2D>("hist_nBinHit_Light", "Counts the number of OpHits in each bin (no PE weighting).",
+        private_nBinsZ, private_zCryoMin, private_zCryoMax, private_nBinsX, private_xCryoMin, private_xCryoMax);
+
+    //Buffers
+    fBinHit_Charge_Buffer = new TH2D("hist_BinHit_Charge_Buffer", "Each bin is filled only once per event when a hit is registered in that bin.", 
+        private_nBinsZ, private_zCryoMin, private_zCryoMax, private_nBinsX, private_xCryoMin, private_xCryoMax);
+    fBinHit_Light_Buffer = new TH2D("hist_BinHit_Light_Buffer", "Each bin is filled only once per event when an OpHit is registered in that bin.", 
+        private_nBinsZ, private_zCryoMin, private_zCryoMax, private_nBinsX, private_xCryoMin, private_xCryoMax);
 
   }
   
@@ -367,7 +402,6 @@ namespace Nyarlathotep {
   //-----------------------------------------------------------------------
   void Nyarlathotep::analyze(const art::Event& evt) 
   {
-    std::cout<<"Analyze\n";
     private_nEvt++;
     global_event = evt.id().event();
     art::Handle< std::vector< recob::Hit > > hitHandle;
@@ -432,23 +466,33 @@ namespace Nyarlathotep {
     }
 
     //Call on Reco Tracks
-    std::cout<<"TrackList length: "<<trackList.size()<<"\n";
     for( auto track : trackList ){
-      std::cout<<"Track Length: "<<(track->Length())<<"\n";
+//      if(track->Length()!=0){std::cout<<"Track Length: "<<(track->Length())<<"\n";}
       private_trackLength-> Fill(track->Length());
     }
 
 
     //Call Charge events.
     std::map<std::string, int> nHitsPerGen;
+    double chargeEventTotal =0.0;
+    int nHitsEventTotal=0;
     for( auto ptrHit: hitList){
       try{
         recob::Hit hit = *ptrHit;
         double hitInt = hit.Integral();
         double hitAmp = hit.PeakAmplitude();
         double scaleTot = 0.;
+
         std::vector<double> xyzPos;
         xyzPos = (private_service_bt->HitToXYZ(ptrHit));
+        //Fill Charge Buffer (Note we use set bin content instead of Fill, since we want each bin to be BOOLE.
+        fBinHit_Charge_Buffer->SetBinContent(fBinHit_Charge_Buffer->FindBin(xyzPos[2],xyzPos[0]), 1.0);
+        fBinNHits_Charge->Fill(xyzPos[2],xyzPos[0],1.0);
+        fZVT_Charge->Fill(xyzPos[2],hit.PeakTime(),hitInt);
+
+        chargeEventTotal+=hit.Integral();
+        nHitsEventTotal++;
+
         std::vector<sim::TrackIDE>  eveIDEs = private_service_bt->HitToEveID(ptrHit);
         for(const sim::TrackIDE eveIDE : eveIDEs){
           auto tID = eveIDE.trackID;
@@ -456,7 +500,7 @@ namespace Nyarlathotep {
           if(particle){
             std::string generatorName=tIdToLabel[tID];
             if(nHitsPerGen.find(generatorName) == nHitsPerGen.end()){
-              nHitsPerGen.emplace(generatorName, 1); 
+              nHitsPerGen.emplace(generatorName, 1);
             }else{
               auto tmp = nHitsPerGen.find(generatorName);
               tmp->second = (tmp->second) + 1;
@@ -499,17 +543,38 @@ namespace Nyarlathotep {
       genHitHist->Fill(itr->second);
     }
 
+    //Add fBinHit_Charge_Buffer to fBinHitCharge.
+//    if(fBinHit_Charge->GetSumw2N() == 0 ){fBinHit_Charge->Sumw2(1);}
+//    if(fBinHit_Charge_Buffer->GetSumw2N() == 0 ){fBinHit_Charge_Buffer->Sumw2(1);}
+
+    fBinHit_Charge->Add(fBinHit_Charge, fBinHit_Charge_Buffer, 1.0, 1.0);
+    fBinHit_Charge_Buffer->Reset();
+    //delete fBinHit_Charge_Buffer;
+
+    fEventCharge->Fill(chargeEventTotal);
+    fNHits_Charge->Fill(double(nHitsEventTotal));
+
 
     //Call Op Events
+
+    int nOpHitsEventTotal=0;
+    double lightEventTotal=0.0;
 
     for(const art::Ptr<recob::OpHit>& ptrOpHit: opHitList){
       try{
         recob::OpHit opHit = *ptrOpHit;
         double nPE=opHit.PE();
         double scaleTot=0.;
+        lightEventTotal+=nPE;
+        nOpHitsEventTotal++;
         //need position,
         std::vector<double> xyzPos          = private_service_pbt  -> OpHitToXYZ(ptrOpHit);
         std::vector<sim::TrackSDP>  eveSDPs = private_service_pbt  -> OpHitToEveSDPs(ptrOpHit);
+
+        //Fill Charge Buffer (Note we use set bin content instead of Fill, since we want each bin to be BOOLE.
+        fBinHit_Light_Buffer->SetBinContent(fBinHit_Light_Buffer->FindBin(xyzPos[2],xyzPos[0]), 1.0);
+        fBinNHits_Light->Fill(xyzPos[2],xyzPos[0],1.0);
+
         for(const sim::TrackSDP eveSDP : eveSDPs){
           auto tID = eveSDP.trackID;
           const simb::MCParticle* particle = private_service_pbt->TrackIDToParticle(eveSDP.trackID);
@@ -540,6 +605,16 @@ namespace Nyarlathotep {
    //     throw;
       }
     }//End for(OpHit)
+
+    //if( fBinHit_Light->GetSumw2N() == 0 ){fBinHit_Light->Sumw2();}
+    //if( fBinHit_Light_Buffer->GetSumw2N() == 0 ){fBinHit_Light_Buffer->Sumw2();}
+    fBinHit_Light->Add(fBinHit_Light, fBinHit_Light_Buffer, 1.0, 1.0);
+    fBinHit_Light_Buffer->Reset();
+    fEventLight->Fill(lightEventTotal);
+    fNHits_Light->Fill(double(nOpHitsEventTotal));
+
+
+    fEventChargeVLight->Fill(chargeEventTotal,lightEventTotal,1.0);
 
     //Call OpFlashes
     for( auto ptrOpFlash : opFlashList ){
